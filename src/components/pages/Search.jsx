@@ -249,166 +249,7 @@ return (
         </section>
       )}
 
-      {/* Albums */}
-      {searchResults.albums.length > 0 && (
-        <section className="mb-8">
-          <h2 className="text-xl font-bold text-white mb-4">Albums</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {searchResults.albums.map((album) => (
-              <AlbumCard
-                key={album.Id}
-                album={album}
-                onPlay={handlePlayAlbum}
-                onClick={handleAlbumClick}
-              />
-            ))}
-          </div>
-        </section>
-)}
-
-        {/* Artists Section */}
-        {searchResults.artists.length > 0 && (
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-white mb-4">Artists</h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-              {searchResults.artists.map((artist) => (
-                <div
-                  key={artist.Id}
-                  className="group bg-gray-dark rounded-lg p-4 hover:bg-gray-medium transition-colors cursor-pointer"
-                  onClick={() => handleArtistClick(artist.Id)}
-                >
-                  <div className="aspect-square mb-3 relative overflow-hidden rounded-full">
-                    <img
-                      src={artist.imageUrl}
-                      alt={artist.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                    />
-                  </div>
-                  <h3 className="font-semibold text-white text-sm truncate mb-1">
-                    {artist.name}
-                  </h3>
-                  <p className="text-gray-light text-xs">Artist</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Recent Searches or Browse Categories */}
-        {!hasSearched && (
-          <div className="space-y-8">
-            <div>
-              <h2 className="text-2xl font-bold text-white mb-4">Browse Categories</h2>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                {[
-                  { name: "Pop", color: "bg-gradient-to-br from-purple-500 to-pink-500", icon: "Music" },
-                  { name: "Rock", color: "bg-gradient-to-br from-red-500 to-orange-500", icon: "Guitar" },
-                  { name: "Hip Hop", color: "bg-gradient-to-br from-yellow-500 to-red-500", icon: "Mic" },
-                  { name: "Electronic", color: "bg-gradient-to-br from-blue-500 to-cyan-500", icon: "Zap" },
-                  { name: "Jazz", color: "bg-gradient-to-br from-green-500 to-blue-500", icon: "Music2" },
-                  { name: "Classical", color: "bg-gradient-to-br from-purple-500 to-indigo-500", icon: "Piano" },
-                ].map((category) => (
-                  <div
-                    key={category.name}
-                    className={cn(
-                      "aspect-square rounded-lg p-4 cursor-pointer hover:scale-105 transition-transform",
-                      category.color
-                    )}
-                    onClick={() => handleSearch(category.name.toLowerCase())}
-                  >
-                    <div className="flex flex-col justify-between h-full">
-                      <h3 className="text-white font-bold text-xl">{category.name}</h3>
-                      <div className="self-end">
-                        <ApperIcon name={category.icon} size={24} className="text-white" />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-)}
-      </div>
-    );
-  }
-
-  return (
-    <div className="p-6 pb-32">
-      {/* Search Results Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white mb-2">
-          Search results for "{query}"
-        </h1>
-        <p className="text-gray-light">
-          Found {totalResults} results
-        </p>
-      </div>
-
-      {/* Top Result */}
-      {searchResults.tracks.length > 0 && (
-        <section className="mb-8">
-          <h2 className="text-xl font-bold text-white mb-4">Top Result</h2>
-          <div className="bg-surface p-6 rounded-lg hover:bg-gray-dark cursor-pointer transition-all duration-200 max-w-sm">
-            <div className="flex items-center gap-4 mb-4">
-              <img 
-                src={searchResults.tracks[0].coverUrl}
-                alt={searchResults.tracks[0].title}
-                className="w-16 h-16 rounded-lg"
-              />
-              <div>
-                <h3 className="text-white font-bold text-lg">{searchResults.tracks[0].title}</h3>
-                <p className="text-gray-light">{searchResults.tracks[0].artist}</p>
-              </div>
-            </div>
-            <button
-              onClick={() => onPlayTrack(searchResults.tracks[0], [searchResults.tracks[0]])}
-              className="bg-primary hover:bg-green-400 text-black font-medium px-6 py-2 rounded-full transition-all duration-200 hover:scale-105"
-            >
-              Play
-            </button>
-          </div>
-        </section>
-      )}
-
-      {/* Tracks */}
-      {searchResults.tracks.length > 0 && (
-        <section className="mb-8">
-          <h2 className="text-xl font-bold text-white mb-4">Songs</h2>
-          <div className="space-y-1">
-            {searchResults.tracks.slice(0, 5).map((track, index) => (
-              <TrackRow
-                key={track.Id}
-                track={track}
-                index={index}
-                onPlay={(track) => onPlayTrack(track, searchResults.tracks)}
-                onLike={onLikeTrack}
-                onAddToQueue={onAddToQueue}
-                showIndex={false}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Playlists */}
-      {searchResults.playlists.length > 0 && (
-        <section className="mb-8">
-          <h2 className="text-xl font-bold text-white mb-4">Playlists</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {searchResults.playlists.map((playlist) => (
-              <PlaylistCard
-                key={playlist.Id}
-                playlist={playlist}
-                onPlay={handlePlayPlaylist}
-                onClick={handlePlaylistClick}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Albums */}
+{/* Albums */}
       {searchResults.albums.length > 0 && (
         <section className="mb-8">
           <h2 className="text-xl font-bold text-white mb-4">Albums</h2>
@@ -425,10 +266,10 @@ return (
         </section>
       )}
 
-      {/* Artists Section */}
+      {/* Artists */}
       {searchResults.artists.length > 0 && (
-        <div className="mb-8">
-          <h2 className="text-2xl font-bold text-white mb-4">Artists</h2>
+        <section className="mb-8">
+          <h2 className="text-xl font-bold text-white mb-4">Artists</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {searchResults.artists.map((artist) => (
               <div
@@ -450,7 +291,7 @@ return (
               </div>
             ))}
           </div>
-        </div>
+        </section>
       )}
     </div>
   );
