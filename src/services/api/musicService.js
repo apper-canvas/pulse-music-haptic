@@ -55,7 +55,7 @@ export const tracksService = {
 export const trendingService = {
   getTrendingSongs: async () => {
     // Return a curated list of trending tracks
-    return tracks.slice(0, 6);
+    return tracksData.slice(0, 6);
   }
 };
 
