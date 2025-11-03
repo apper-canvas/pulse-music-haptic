@@ -1,0 +1,62 @@
+[
+  {
+    "Id": 1,
+    "title": "Today's Top Hits",
+    "description": "The biggest hits right now in one playlist.",
+    "coverUrl": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop&crop=faces",
+    "trackIds": ["1", "2", "3", "4", "5"],
+    "trackCount": 5,
+    "duration": 896,
+    "featured": true
+  },
+  {
+    "Id": 2,
+    "title": "Chill Vibes",
+    "description": "Relax and unwind with these smooth tracks.",
+    "coverUrl": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&h=400&fit=crop&crop=faces",
+    "trackIds": ["6", "8", "10"],
+    "trackCount": 3,
+    "duration": 650,
+    "featured": true
+  },
+  {
+    "Id": 3,
+    "title": "Pop Rising",
+    "description": "The hottest pop tracks taking over the charts.",
+    "coverUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=faces",
+    "trackIds": ["2", "3", "4", "9"],
+    "trackCount": 4,
+    "duration": 770,
+    "featured": true
+  },
+  {
+    "Id": 4,
+    "title": "Hip Hop Central",
+    "description": "The best hip hop and rap tracks of the moment.",
+    "coverUrl": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop&crop=faces",
+    "trackIds": ["7", "5"],
+    "trackCount": 2,
+    "duration": 353,
+    "featured": true
+  },
+  {
+    "Id": 5,
+    "title": "Indie Mix",
+    "description": "Discover fresh indie sounds and hidden gems.",
+    "coverUrl": "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=400&h=400&fit=crop&crop=faces",
+    "trackIds": ["6", "10"],
+    "trackCount": 2,
+    "duration": 453,
+    "featured": true
+  },
+  {
+    "Id": 6,
+    "title": "My Playlist #1",
+    "description": "My personal favorite tracks.",
+    "coverUrl": "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?w=400&h=400&fit=crop&crop=faces",
+    "trackIds": ["1", "3", "5", "7", "9"],
+    "trackCount": 5,
+    "duration": 969,
+    "featured": false
+  }
+]

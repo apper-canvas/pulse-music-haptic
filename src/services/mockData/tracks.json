@@ -1,0 +1,122 @@
+[
+  {
+    "Id": 1,
+    "title": "Blinding Lights",
+    "artist": "The Weeknd",
+    "artistId": "1",
+    "album": "After Hours",
+    "albumId": "1",
+    "duration": 200,
+    "coverUrl": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop&crop=faces",
+    "audioUrl": "/audio/blinding-lights.mp3",
+    "liked": true
+  },
+  {
+    "Id": 2,
+    "title": "Watermelon Sugar",
+    "artist": "Harry Styles",
+    "artistId": "2",
+    "album": "Fine Line",
+    "albumId": "2",
+    "duration": 174,
+    "coverUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=faces",
+    "audioUrl": "/audio/watermelon-sugar.mp3",
+    "liked": false
+  },
+  {
+    "Id": 3,
+    "title": "Levitating",
+    "artist": "Dua Lipa",
+    "artistId": "3",
+    "album": "Future Nostalgia",
+    "albumId": "3",
+    "duration": 203,
+    "coverUrl": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&h=400&fit=crop&crop=faces",
+    "audioUrl": "/audio/levitating.mp3",
+    "liked": true
+  },
+  {
+    "Id": 4,
+    "title": "Good 4 U",
+    "artist": "Olivia Rodrigo",
+    "artistId": "4",
+    "album": "SOUR",
+    "albumId": "4",
+    "duration": 178,
+    "coverUrl": "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?w=400&h=400&fit=crop&crop=faces",
+    "audioUrl": "/audio/good-4-u.mp3",
+    "liked": false
+  },
+  {
+    "Id": 5,
+    "title": "Stay",
+    "artist": "The Kid LAROI & Justin Bieber",
+    "artistId": "5",
+    "album": "Stay",
+    "albumId": "5",
+    "duration": 141,
+    "coverUrl": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop&crop=faces",
+    "audioUrl": "/audio/stay.mp3",
+    "liked": true
+  },
+  {
+    "Id": 6,
+    "title": "Heat Waves",
+    "artist": "Glass Animals",
+    "artistId": "6",
+    "album": "Dreamland",
+    "albumId": "6",
+    "duration": 238,
+    "coverUrl": "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=400&h=400&fit=crop&crop=faces",
+    "audioUrl": "/audio/heat-waves.mp3",
+    "liked": false
+  },
+  {
+    "Id": 7,
+    "title": "Industry Baby",
+    "artist": "Lil Nas X ft. Jack Harlow",
+    "artistId": "7",
+    "album": "MONTERO",
+    "albumId": "7",
+    "duration": 212,
+    "coverUrl": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop&crop=faces",
+    "audioUrl": "/audio/industry-baby.mp3",
+    "liked": true
+  },
+  {
+    "Id": 8,
+    "title": "Peaches",
+    "artist": "Justin Bieber ft. Daniel Caesar",
+    "artistId": "8",
+    "album": "Justice",
+    "albumId": "8",
+    "duration": 197,
+    "coverUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=faces",
+    "audioUrl": "/audio/peaches.mp3",
+    "liked": false
+  },
+  {
+    "Id": 9,
+    "title": "Deja Vu",
+    "artist": "Olivia Rodrigo",
+    "artistId": "4",
+    "album": "SOUR",
+    "albumId": "4",
+    "duration": 215,
+    "coverUrl": "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?w=400&h=400&fit=crop&crop=faces",
+    "audioUrl": "/audio/deja-vu.mp3",
+    "liked": true
+  },
+  {
+    "Id": 10,
+    "title": "Save Your Tears",
+    "artist": "The Weeknd",
+    "artistId": "1",
+    "album": "After Hours",
+    "albumId": "1",
+    "duration": 215,
+    "coverUrl": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop&crop=faces",
+    "audioUrl": "/audio/save-your-tears.mp3",
+    "liked": false
+  }
+]

@@ -1,0 +1,62 @@
+[
+  {
+    "Id": 1,
+    "title": "After Hours",
+    "artist": "The Weeknd",
+    "artistId": "1",
+    "year": 2020,
+    "coverUrl": "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop&crop=faces",
+    "trackIds": ["1", "10"],
+    "trackCount": 2
+  },
+  {
+    "Id": 2,
+    "title": "Fine Line",
+    "artist": "Harry Styles",
+    "artistId": "2",
+    "year": 2019,
+    "coverUrl": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=faces",
+    "trackIds": ["2"],
+    "trackCount": 1
+  },
+  {
+    "Id": 3,
+    "title": "Future Nostalgia",
+    "artist": "Dua Lipa",
+    "artistId": "3",
+    "year": 2020,
+    "coverUrl": "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&h=400&fit=crop&crop=faces",
+    "trackIds": ["3"],
+    "trackCount": 1
+  },
+  {
+    "Id": 4,
+    "title": "SOUR",
+    "artist": "Olivia Rodrigo",
+    "artistId": "4",
+    "year": 2021,
+    "coverUrl": "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?w=400&h=400&fit=crop&crop=faces",
+    "trackIds": ["4", "9"],
+    "trackCount": 2
+  },
+  {
+    "Id": 5,
+    "title": "Stay",
+    "artist": "The Kid LAROI & Justin Bieber",
+    "artistId": "5",
+    "year": 2021,
+    "coverUrl": "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop&crop=faces",
+    "trackIds": ["5"],
+    "trackCount": 1
+  },
+  {
+    "Id": 6,
+    "title": "Dreamland",
+    "artist": "Glass Animals",
+    "artistId": "6",
+    "year": 2020,
+    "coverUrl": "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=400&h=400&fit=crop&crop=faces",
+    "trackIds": ["6"],
+    "trackCount": 1
+  }
+]

@@ -1,0 +1,87 @@
+@import 'react-toastify/dist/ReactToastify.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #121212;
+  color: white;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #282828;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #535353;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #B3B3B3;
+}
+
+/* Toast Overrides */
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
+.Toastify__toast {
+  background: #282828;
+  color: white;
+  border-radius: 8px;
+  border: 1px solid #535353;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.Toastify__toast--success {
+  background: linear-gradient(135deg, #1DB954 0%, #1ed760 100%);
+}
+
+.Toastify__toast--error {
+  background: linear-gradient(135deg, #FF6B6B 0%, #ee5a52 100%);
+}
+
+.Toastify__progress-bar {
+  background: white;
+}
+
+/* Audio Progress Animation */
+@keyframes progress-wave {
+  0% { transform: scaleY(1); }
+  50% { transform: scaleY(1.2); }
+  100% { transform: scaleY(1); }
+}
+
+.progress-animate {
+  animation: progress-wave 1s ease-in-out infinite;
+}
+
+/* Selection Styling */
+::selection {
+  background: rgba(29, 185, 84, 0.3);
+  color: white;
+}
+
+/* Focus Styles */
+button:focus-visible,
+input:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #00D9FF;
+  outline-offset: 2px;
+}
