@@ -58,7 +58,7 @@ const handlePlayTrack = (track, trackQueue = []) => {
     playTrack(track, trackQueue, 0, isAuthenticated);
   };
 
-  const handleLikeTrack = async (trackId) => {
+const handleLikeTrack = async (trackId) => {
     try {
       await tracksService.toggleLike(trackId);
       toast.success("Added to liked songs", {
@@ -75,7 +75,6 @@ const handlePlayTrack = (track, trackQueue = []) => {
         autoClose: 3000,
       });
     }
-}
   };
 
 const handleSearch = (query) => {

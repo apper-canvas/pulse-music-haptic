@@ -17,12 +17,10 @@ const Layout = ({
   onVolumeChange,
   onToggleShuffle,
   onToggleRepeat,
-  showSearch,
-  isAuthenticated,
-  user,
-  onSearch,
+onSearch,
   showSearch = false,
-  isAuthenticated = false 
+  isAuthenticated = false,
+  user
 }) => {
 
   // Signup banner for non-authenticated users
