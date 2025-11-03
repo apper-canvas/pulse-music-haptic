@@ -6,16 +6,20 @@ import MobileNavigation from "@/components/organisms/MobileNavigation";
 import TopBar from "@/components/organisms/TopBar";
 import Sidebar from "@/components/organisms/Sidebar";
 import PlayerBar from "@/components/organisms/PlayerBar";
-import { cn } from "@/utils/cn";
-const Layout = ({ 
-  playerState, 
-  onPlayPause, 
-  onNext, 
-  onPrevious, 
-  onSeek, 
+
+const Layout = ({
+  children,
+  playerState,
+  onPlayPause,
+  onNext,
+  onPrevious,
+  onSeek,
   onVolumeChange,
   onToggleShuffle,
   onToggleRepeat,
+  showSearch,
+  isAuthenticated,
+  user,
   onSearch,
   showSearch = false,
   isAuthenticated = false 
@@ -27,10 +31,9 @@ const Layout = ({
       <div className="flex items-center justify-center gap-2 text-sm font-medium">
         <ApperIcon name="Star" size={16} />
         <span>Sign up for free to get unlimited access to all songs</span>
-        <Button 
+<Button 
           size="sm" 
           variant="secondary" 
-          className="ml-4 bg-black text-white border-black hover:bg-gray-800"
         >
           Sign up free
         </Button>

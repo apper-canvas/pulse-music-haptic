@@ -1,29 +1,31 @@
-import React, { useState, useEffect } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { playlistsService, tracksService } from "@/services/api/musicService";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
 import PlaylistCard from "@/components/molecules/PlaylistCard";
 import TrackRow from "@/components/molecules/TrackRow";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
-import { playlistsService, tracksService } from "@/services/api/musicService";
-import { useNavigate } from "react-router-dom";
 import { cn } from "@/utils/cn";
 
-const Library = ({ onPlayTrack, onLikeTrack, onAddToQueue }) => {
+const Library = ({ onPlayTrack, onLikeTrack, onAddToQueue, recentlyPlayed }) => {
   const [playlists, setPlaylists] = useState([]);
   const [likedTracks, setLikedTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [activeTab, setActiveTab] = useState("playlists");
-  const [viewMode, setViewMode] = useState("grid"); // grid or list
+  const [viewMode, setViewMode] = useState("grid");
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [newPlaylistData, setNewPlaylistData] = useState({ title: "", description: "" });
+  const [creating, setCreating] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   // Check if we're on a specific library page
   const isLikedPage = location.pathname === "/library/liked";
   const isRecentPage = location.pathname === "/library/recent";
-
   const loadLibraryData = async () => {
     try {
       setError("");
@@ -113,8 +115,10 @@ const Library = ({ onPlayTrack, onLikeTrack, onAddToQueue }) => {
     );
   }
 
-  // Handle recently played page
+// Handle recently played page
   if (isRecentPage) {
+    const recentTracks = recentlyPlayed.map(item => item.track);
+    
     return (
       <div className="p-6 pb-32">
         {/* Header */}
@@ -124,22 +128,53 @@ const Library = ({ onPlayTrack, onLikeTrack, onAddToQueue }) => {
           </div>
           <div>
             <h1 className="text-4xl font-bold text-white mb-2">Recently Played</h1>
-            <p className="text-gray-light">Your listening history</p>
+            <p className="text-gray-light">{recentTracks.length} tracks</p>
           </div>
         </div>
 
-        <Empty
-          title="No recent activity"
-          description="Your recently played tracks will show up here after you start listening."
-          icon="Clock"
-          action={{
-            label: "Start Listening",
-            onClick: () => navigate("/")
-          }}
-        />
+        {recentTracks.length === 0 ? (
+          <Empty
+            title="No recent activity"
+            description="Your recently played tracks will show up here after you start listening."
+            icon="Clock"
+            action={{
+              label: "Start Listening",
+              onClick: () => navigate("/")
+            }}
+          />
+        ) : (
+          <div className="space-y-1">
+            {recentTracks.map((track, index) => (
+              <TrackRow
+                key={`${track.Id}-${index}`}
+                track={track}
+                index={index}
+                onPlay={(track) => onPlayTrack(track, recentTracks)}
+                onLike={onLikeTrack}
+                onAddToQueue={onAddToQueue}
+              />
+            ))}
+          </div>
+        )}
       </div>
     );
   }
+
+  const handleCreatePlaylist = async () => {
+    if (!newPlaylistData.title.trim()) return;
+    
+    setCreating(true);
+    try {
+      await playlistsService.create(newPlaylistData);
+      setShowCreateModal(false);
+      setNewPlaylistData({ title: "", description: "" });
+      await loadLibraryData();
+    } catch (error) {
+      console.error("Failed to create playlist:", error);
+    } finally {
+      setCreating(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -242,7 +277,7 @@ const Library = ({ onPlayTrack, onLikeTrack, onAddToQueue }) => {
       </div>
 
       {/* Content */}
-      {activeTab === "playlists" && (
+{activeTab === "playlists" && (
         <div>
           {playlists.length === 0 ? (
             <Empty
@@ -251,7 +286,7 @@ const Library = ({ onPlayTrack, onLikeTrack, onAddToQueue }) => {
               icon="Music"
               action={{
                 label: "Create Playlist",
-                onClick: () => console.log("Create playlist")
+                onClick: () => setShowCreateModal(true)
               }}
             />
           ) : (
@@ -273,7 +308,7 @@ const Library = ({ onPlayTrack, onLikeTrack, onAddToQueue }) => {
         </div>
       )}
 
-      {activeTab === "albums" && (
+{activeTab === "albums" && (
         <Empty
           title="No albums saved"
           description="Albums you save will appear here for easy access."
@@ -283,6 +318,74 @@ const Library = ({ onPlayTrack, onLikeTrack, onAddToQueue }) => {
             onClick: () => navigate("/search")
           }}
         />
+      )}
+
+      {/* Create Playlist Modal */}
+      {showCreateModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+          <div className="bg-surface rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold text-white">Create Playlist</h2>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setShowCreateModal(false)}
+                className="w-8 h-8"
+              >
+                <ApperIcon name="X" size={16} />
+              </Button>
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-light mb-2">
+                  Playlist Name *
+                </label>
+                <input
+                  type="text"
+                  value={newPlaylistData.title}
+                  onChange={(e) => setNewPlaylistData(prev => ({ ...prev, title: e.target.value }))}
+                  className="w-full px-4 py-3 bg-gray-dark text-white rounded-lg border border-gray-medium focus:border-primary focus:outline-none"
+                  placeholder="My Playlist #1"
+                  maxLength={100}
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-light mb-2">
+                  Description (Optional)
+                </label>
+                <textarea
+                  value={newPlaylistData.description}
+                  onChange={(e) => setNewPlaylistData(prev => ({ ...prev, description: e.target.value }))}
+                  className="w-full px-4 py-3 bg-gray-dark text-white rounded-lg border border-gray-medium focus:border-primary focus:outline-none resize-none"
+                  placeholder="Add a description..."
+                  rows={3}
+                  maxLength={300}
+                />
+              </div>
+            </div>
+            
+            <div className="flex gap-3 mt-6">
+              <Button
+                variant="secondary"
+                onClick={() => setShowCreateModal(false)}
+                className="flex-1"
+                disabled={creating}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                onClick={handleCreatePlaylist}
+                className="flex-1"
+                disabled={!newPlaylistData.title.trim() || creating}
+              >
+                {creating ? "Creating..." : "Create"}
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

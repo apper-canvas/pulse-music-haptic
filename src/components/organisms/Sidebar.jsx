@@ -3,7 +3,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import ApperIcon from "@/components/ApperIcon";
 import { cn } from "@/utils/cn";
 
-const Sidebar = ({ className }) => {
+const Sidebar = ({ className, user, isAuthenticated }) => {
   const location = useLocation();
 
   const navItems = [
@@ -18,7 +18,7 @@ const Sidebar = ({ className }) => {
   ];
 
   return (
-    <div className={cn("w-60 bg-black text-white flex flex-col h-full", className)}>
+<div className={cn("w-60 bg-black text-white flex flex-col h-full", className)}>
       {/* Logo */}
       <div className="p-6 border-b border-gray-dark">
         <div className="flex items-center gap-3">
@@ -28,6 +28,27 @@ const Sidebar = ({ className }) => {
           <span className="text-xl font-bold">Pulse Music</span>
         </div>
       </div>
+
+      {/* User Profile Section */}
+      {isAuthenticated && user && (
+        <div className="p-4 border-b border-gray-dark">
+          <div className="flex items-center gap-3">
+            <img 
+              src={user.avatar} 
+              alt={user.name}
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            <div className="flex-1 min-w-0">
+              <div className="text-sm font-medium text-white truncate">
+                {user.name}
+              </div>
+              {user.premium && (
+                <div className="text-xs text-primary font-medium">Premium</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Navigation */}
       <nav className="flex-1 p-6">
@@ -61,7 +82,7 @@ const Sidebar = ({ className }) => {
         </div>
 
         {/* Library Section */}
-        <div className="mt-8">
+<div className="mt-6">
           <div className="text-xs font-semibold text-gray-light uppercase tracking-wider mb-4 px-3">
             Your Library
           </div>

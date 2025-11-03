@@ -1,19 +1,46 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { recentlyPlayedService } from "@/services/api/musicService";
 
 const usePlayer = () => {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(80);
   const [queue, setQueue] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [shuffle, setShuffle] = useState(false);
-  const [repeat, setRepeat] = useState("off"); // off, track, queue
-  
+  const [repeat, setRepeat] = useState('off'); // 'off', 'queue', 'track'
+  const [volume, setVolume] = useState(1);
+  const [error, setError] = useState(null);
+  const [recentlyPlayed, setRecentlyPlayed] = useState([]);
   const audioRef = useRef(null);
   const intervalRef = useRef(null);
+
+  // Play next track
+  const playNext = useCallback(() => {
+    if (queue.length === 0) return;
+
+    let nextIndex;
+    if (shuffle) {
+      nextIndex = Math.floor(Math.random() * queue.length);
+    } else {
+      nextIndex = currentIndex + 1;
+      if (nextIndex >= queue.length) {
+        if (repeat === "queue") {
+          nextIndex = 0;
+        } else {
+          setIsPlaying(false);
+          if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+          }
+          return;
+        }
+      }
+    }
+
+    playTrack(queue[nextIndex], queue, nextIndex);
+  }, [queue, currentIndex, shuffle, repeat]);
 
   // Initialize audio element
   useEffect(() => {
@@ -59,7 +86,7 @@ const usePlayer = () => {
         clearInterval(intervalRef.current);
       }
     };
-  }, [repeat]);
+  }, [repeat, playNext]);
 
   // Update volume
   useEffect(() => {
@@ -69,11 +96,20 @@ const usePlayer = () => {
   }, [volume]);
 
   // Play track
-const playTrack = useCallback(async (track, trackQueue = [], index = 0, isAuthenticated = false) => {
+  const playTrack = useCallback(async (track, trackQueue = [], index = 0, isAuthenticated = false) => {
     try {
       setCurrentTrack(track);
       setQueue(trackQueue.length > 0 ? trackQueue : [track]);
       setCurrentIndex(index);
+      
+      // Add to recently played
+      try {
+        await recentlyPlayedService.addTrack(track);
+        const recent = await recentlyPlayedService.getRecent();
+        setRecentlyPlayed(recent);
+      } catch (error) {
+        console.error("Failed to update recently played:", error);
+      }
       
       if (audioRef.current) {
         audioRef.current.src = track.audioUrl || "";
@@ -128,10 +164,10 @@ const playTrack = useCallback(async (track, trackQueue = [], index = 0, isAuthen
       toast.error("Failed to play track");
       console.error("Play error:", error);
     }
-  }, [repeat]);
+  }, [repeat, playNext]);
 
   // Toggle play/pause
-const togglePlayPause = useCallback(() => {
+  const togglePlayPause = useCallback(() => {
     if (!currentTrack) return;
 
     if (isPlaying) {
@@ -162,32 +198,7 @@ const togglePlayPause = useCallback(() => {
         });
       }, 1000);
     }
-  }, [currentTrack, isPlaying, duration, repeat]);
-
-  // Play next track
-  const playNext = useCallback(() => {
-    if (queue.length === 0) return;
-
-    let nextIndex;
-    if (shuffle) {
-      nextIndex = Math.floor(Math.random() * queue.length);
-    } else {
-      nextIndex = currentIndex + 1;
-      if (nextIndex >= queue.length) {
-        if (repeat === "queue") {
-          nextIndex = 0;
-        } else {
-          setIsPlaying(false);
-          if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-          }
-          return;
-        }
-      }
-    }
-
-    playTrack(queue[nextIndex], queue, nextIndex);
-  }, [queue, currentIndex, shuffle, repeat, playTrack]);
+  }, [currentTrack, isPlaying, duration, repeat, playNext]);
 
   // Play previous track
   const playPrevious = useCallback(() => {
@@ -222,32 +233,66 @@ const togglePlayPause = useCallback(() => {
 
   // Add track to queue
   const addToQueue = useCallback((track) => {
-    setQueue(prev => [...prev, track]);
-    toast.success(`Added ${track.title} to queue`);
+    setQueue(prev => {
+      const isAlreadyInQueue = prev.some(t => t.Id === track.Id);
+      if (isAlreadyInQueue) {
+        toast.info(`"${track.title}" is already in queue`, {
+          position: "bottom-right",
+          autoClose: 2000,
+        });
+        return prev;
+      }
+      
+      toast.success(`Added "${track.title}" to queue`, {
+        position: "bottom-right",
+        autoClose: 2000,
+      });
+      
+      return [...prev, track];
+    });
   }, []);
 
   // Toggle shuffle
   const toggleShuffle = useCallback(() => {
-    setShuffle(prev => !prev);
-    toast.success(`Shuffle ${!shuffle ? "on" : "off"}`);
-  }, [shuffle]);
+    setShuffle(prev => {
+      const newShuffle = !prev;
+      toast.success(newShuffle ? "Shuffle on" : "Shuffle off");
+      return newShuffle;
+    });
+  }, []);
 
-  // Toggle repeat
+  // Toggle repeat mode
   const toggleRepeat = useCallback(() => {
-    const repeatModes = ["off", "queue", "track"];
-    const currentModeIndex = repeatModes.indexOf(repeat);
-    const nextMode = repeatModes[(currentModeIndex + 1) % repeatModes.length];
-    setRepeat(nextMode);
-    
-    const modeLabels = {
-      off: "Repeat off",
-      queue: "Repeat queue",
-      track: "Repeat track"
+    setRepeat(prev => {
+      const modes = ['off', 'queue', 'track'];
+      const currentIndex = modes.indexOf(prev);
+      const nextMode = modes[(currentIndex + 1) % modes.length];
+      
+      const modeLabels = {
+        off: "Repeat off",
+        queue: "Repeat queue",
+        track: "Repeat track"
+      };
+      toast.success(modeLabels[nextMode]);
+      return nextMode;
+    });
+  }, []);
+
+  // Load recently played on mount
+  useEffect(() => {
+    const loadRecentlyPlayed = async () => {
+      try {
+        const recent = await recentlyPlayedService.getRecent();
+        setRecentlyPlayed(recent);
+      } catch (error) {
+        console.error("Failed to load recently played:", error);
+      }
     };
-    toast.success(modeLabels[nextMode]);
-  }, [repeat]);
+    loadRecentlyPlayed();
+  }, []);
 
   return {
+    // State
     currentTrack,
     isPlaying,
     currentTime,
@@ -256,6 +301,10 @@ const togglePlayPause = useCallback(() => {
     queue,
     shuffle,
     repeat,
+    error,
+    recentlyPlayed,
+    
+    // Actions
     playTrack,
     togglePlayPause,
     playNext,

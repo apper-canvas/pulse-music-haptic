@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
-import { tracksService } from "@/services/api/musicService";
+import { tracksService, userService } from "@/services/api/musicService";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import Home from "@/components/pages/Home";
@@ -13,18 +13,20 @@ import usePlayer from "@/hooks/usePlayer";
 
 const AppContent = () => {
   const location = useLocation();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isAuthenticated, setIsAuthenticated] = useState(false); // Mock authentication state
+const [searchQuery, setSearchQuery] = useState("");
+  const [isAuthenticated, setIsAuthenticated] = useState(true); // Mock authentication state - set to true for demo
   const [showSignupModal, setShowSignupModal] = useState(false);
+  const [user, setUser] = useState(null);
   const {
     currentTrack,
     isPlaying,
     currentTime,
     duration,
     volume,
-    queue,
+queue,
     shuffle,
     repeat,
+    recentlyPlayed,
     playTrack,
     togglePlayPause,
     playNext,
@@ -37,14 +39,15 @@ const AppContent = () => {
   } = usePlayer();
 
   const playerState = {
-    currentTrack,
+currentTrack,
     isPlaying,
     currentTime,
     duration,
     volume,
     queue,
     shuffle,
-    repeat
+    repeat,
+    recentlyPlayed
   };
 
 const handlePlayTrack = (track, trackQueue = []) => {
@@ -56,34 +59,49 @@ const handlePlayTrack = (track, trackQueue = []) => {
   };
 
   const handleLikeTrack = async (trackId) => {
-    if (!isAuthenticated) {
-      setShowSignupModal(true);
-      return;
-    }
     try {
-      const updatedTrack = await tracksService.toggleLike(trackId);
-      if (updatedTrack) {
-        toast.success(
-          updatedTrack.liked 
-            ? `Added ${updatedTrack.title} to liked songs` 
-            : `Removed ${updatedTrack.title} from liked songs`
-        );
-      }
+      await tracksService.toggleLike(trackId);
+      toast.success("Added to liked songs", {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     } catch (error) {
-      toast.error("Failed to update track");
-      console.error("Error toggling like:", error);
+      toast.error("Failed to like track", {
+        position: "bottom-right",
+        autoClose: 3000,
+      });
     }
+}
   };
 
-  const handleSearch = (query) => {
+const handleSearch = (query) => {
     setSearchQuery(query);
   };
+
+  // Load user data on mount
+  useEffect(() => {
+    const loadUserData = async () => {
+      if (isAuthenticated) {
+        try {
+          const userData = await userService.getCurrentUser();
+          setUser(userData);
+        } catch (error) {
+          console.error("Failed to load user data:", error);
+        }
+      }
+    };
+    loadUserData();
+  }, [isAuthenticated]);
 
   const showSearch = location.pathname === "/search";
 
 return (
     <div>
-      <Layout
+<Layout
         playerState={playerState}
         onPlayPause={togglePlayPause}
         onNext={playNext}
@@ -95,9 +113,10 @@ return (
         onSearch={handleSearch}
         showSearch={showSearch}
         isAuthenticated={isAuthenticated}
+        user={user}
       >
-        <Routes>
-<Route 
+<Routes>
+          <Route 
             path="/" 
             element={<Home onPlayTrack={handlePlayTrack} isAuthenticated={isAuthenticated} />} 
           />
@@ -121,6 +140,7 @@ return (
                 onLikeTrack={handleLikeTrack}
                 onAddToQueue={addToQueue}
                 isAuthenticated={isAuthenticated}
+                recentlyPlayed={recentlyPlayed}
               />
             } 
           />
@@ -135,7 +155,7 @@ return (
               />
             } 
           />
-        </Routes>
+</Routes>
       </Layout>
 
     {/* Signup Modal */}

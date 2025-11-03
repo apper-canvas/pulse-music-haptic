@@ -99,23 +99,28 @@ const handlePlay = () => {
 
       {/* Actions */}
 <div className="flex items-center gap-2">
-        {!isAuthenticated && (
-          <span className="text-xs text-accent font-medium px-2 py-1 bg-accent/20 rounded">
-            PREVIEW
-          </span>
-        )}
-        
-        <Button
-          variant="ghost"
-          size="icon"
-          className="opacity-0 group-hover:opacity-100 w-8 h-8"
-          onClick={handleLike}
-        >
-          <ApperIcon 
-            name={track.liked ? "Heart" : "Heart"} 
-            size={16}
-            className={track.liked ? "text-primary fill-current" : "text-gray-light"} 
-          />
+          {!isAuthenticated && (
+            <span className="text-xs text-accent font-medium px-2 py-1 bg-accent/20 rounded">
+              PREVIEW
+            </span>
+          )}
+          
+          <Button
+            variant="ghost"
+            size="icon"
+            className="opacity-0 group-hover:opacity-100 w-8 h-8 transition-all duration-200"
+            onClick={handleLike}
+          >
+            <ApperIcon 
+              name="Heart" 
+              size={16}
+              className={cn(
+                "transition-all duration-200",
+                track.liked 
+                  ? "text-primary fill-current scale-110" 
+                  : "text-gray-light hover:text-white"
+              )} 
+            />
         </Button>
 
         <Button

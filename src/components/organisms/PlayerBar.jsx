@@ -1,9 +1,9 @@
 import React from "react";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
 import Slider from "@/components/atoms/Slider";
-import { formatTime } from "@/utils/formatTime";
+import Button from "@/components/atoms/Button";
 import { cn } from "@/utils/cn";
+import { formatTime } from "@/utils/formatTime";
 
 const PlayerBar = ({ 
   currentTrack, 
@@ -13,6 +13,7 @@ const PlayerBar = ({
   volume,
   shuffle,
   repeat,
+  queue = [],
   onPlayPause,
   onNext,
   onPrevious,
@@ -164,13 +165,19 @@ const PlayerBar = ({
         </div>
 
         {/* Volume & Additional Controls */}
-        <div className="flex items-center gap-3 flex-1 justify-end">
+<div className="flex items-center gap-3 flex-1 justify-end">
           <Button
             variant="ghost"
             size="icon"
-            className="w-8 h-8 hidden md:flex"
+            className="w-8 h-8 hidden md:flex relative group"
+            title={`Queue (${queue.length} tracks)`}
           >
             <ApperIcon name="List" size={16} />
+            {queue.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-primary text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                {queue.length > 9 ? "9+" : queue.length}
+              </span>
+            )}
           </Button>
 
           <Button
