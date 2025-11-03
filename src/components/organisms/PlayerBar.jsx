@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import ApperIcon from "@/components/ApperIcon";
 import Slider from "@/components/atoms/Slider";
 import Button from "@/components/atoms/Button";
 import { cn } from "@/utils/cn";
 import { formatTime } from "@/utils/formatTime";
+import LyricsPanel from "@/components/molecules/LyricsPanel";
 
 const PlayerBar = ({ 
   currentTrack, 
@@ -13,6 +14,7 @@ const PlayerBar = ({
   volume,
   shuffle,
   repeat,
+  lyrics,
   queue = [],
   onPlayPause,
   onNext,
@@ -21,8 +23,10 @@ const PlayerBar = ({
   onVolumeChange,
   onToggleShuffle,
   onToggleRepeat,
+  onGetLyrics,
   className 
 }) => {
+  const [showLyrics, setShowLyrics] = useState(false);
   if (!currentTrack) {
     return (
       <div className={cn("bg-surface border-t border-gray-dark p-4", className)}>
@@ -169,6 +173,60 @@ const PlayerBar = ({
           <Button
             variant="ghost"
             size="icon"
+            className={cn(
+              "w-8 h-8 hidden md:flex",
+              shuffle ? "text-primary hover:text-primary" : "text-gray-light hover:text-white"
+            )}
+            onClick={onToggleShuffle}
+            title={shuffle ? "Shuffle on" : "Shuffle off"}
+          >
+            <ApperIcon name="Shuffle" size={16} />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "w-8 h-8 hidden md:flex relative",
+              repeat !== 'off' ? "text-primary hover:text-primary" : "text-gray-light hover:text-white"
+            )}
+            onClick={onToggleRepeat}
+            title={
+              repeat === 'track' ? "Repeat track" : 
+              repeat === 'queue' ? "Repeat queue" : 
+              "Repeat off"
+            }
+          >
+            <ApperIcon name="Repeat" size={16} />
+            {repeat === 'track' && (
+              <span className="absolute -bottom-1 -right-1 text-xs font-bold text-primary">1</span>
+            )}
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(
+              "w-8 h-8 hidden md:flex",
+              lyrics ? "text-primary hover:text-primary" : "text-gray-light hover:text-white"
+            )}
+            onClick={() => {
+              if (currentTrack) {
+                if (!lyrics) {
+                  onGetLyrics(currentTrack.Id);
+                } else {
+                  setShowLyrics(true);
+                }
+              }
+            }}
+            title="Show lyrics"
+          >
+            <ApperIcon name="FileText" size={16} />
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="icon"
             className="w-8 h-8 hidden md:flex relative group"
             title={`Queue (${queue.length} tracks)`}
           >
@@ -199,6 +257,17 @@ const PlayerBar = ({
           </div>
         </div>
       </div>
+
+      {/* Lyrics Panel */}
+      <LyricsPanel
+        isOpen={showLyrics}
+        onClose={() => setShowLyrics(false)}
+        lyrics={lyrics}
+        currentTime={currentTime}
+        isPlaying={isPlaying}
+        trackTitle={currentTrack?.title}
+        artistName={currentTrack?.artist}
+      />
     </div>
   );
 };

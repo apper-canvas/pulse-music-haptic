@@ -2,18 +2,58 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { recentlyPlayedService } from "@/services/api/musicService";
 
+// Mock lyrics data for demonstration
+const mockLyrics = {
+  1: {
+    title: "Blinding Lights",
+    artist: "The Weeknd",
+    lines: [
+      { time: 0, text: "Yeah" },
+      { time: 3, text: "I've been tryna call" },
+      { time: 6, text: "I've been on my own for long enough" },
+      { time: 10, text: "Maybe you can show me how to love, maybe" },
+      { time: 15, text: "I feel like I'm just missing" },
+      { time: 18, text: "Something when you're gone" },
+      { time: 21, text: "Sometimes I wanna text you but for what?" },
+      { time: 25, text: "I cannot say" },
+      { time: 28, text: "I'm blinded by the lights" },
+      { time: 32, text: "No, I can't sleep until I feel your touch" },
+      { time: 36, text: "I said, ooh, I'm blinded by the lights" },
+      { time: 40, text: "No, I can't sleep until I feel your touch" }
+    ]
+  },
+  2: {
+    title: "Watermelon Sugar",
+    artist: "Harry Styles", 
+    lines: [
+      { time: 0, text: "Tastes like strawberries on a summer evenin'" },
+      { time: 4, text: "And it sounds just like a song" },
+      { time: 8, text: "I want more berries and that summer feelin'" },
+      { time: 12, text: "It's so wonderful and warm" },
+      { time: 16, text: "Breathe me in, breathe me out" },
+      { time: 20, text: "I don't know if I could ever go without" },
+      { time: 24, text: "I'm just thinking out loud" },
+      { time: 28, text: "I don't know if I could ever go without" },
+      { time: 32, text: "Watermelon sugar high" },
+      { time: 36, text: "Watermelon sugar high" },
+      { time: 40, text: "Watermelon sugar high" }
+    ]
+  }
+};
+
 const usePlayer = () => {
   const [currentTrack, setCurrentTrack] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [queue, setQueue] = useState([]);
+const [queue, setQueue] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [shuffle, setShuffle] = useState(false);
   const [repeat, setRepeat] = useState('off'); // 'off', 'queue', 'track'
   const [volume, setVolume] = useState(1);
   const [error, setError] = useState(null);
   const [recentlyPlayed, setRecentlyPlayed] = useState([]);
+  const [lyrics, setLyrics] = useState(null);
   const audioRef = useRef(null);
   const intervalRef = useRef(null);
 
@@ -96,11 +136,14 @@ const usePlayer = () => {
   }, [volume]);
 
   // Play track
-  const playTrack = useCallback(async (track, trackQueue = [], index = 0, isAuthenticated = false) => {
+const playTrack = useCallback(async (track, trackQueue = [], index = 0, isAuthenticated = false) => {
     try {
       setCurrentTrack(track);
       setQueue(trackQueue.length > 0 ? trackQueue : [track]);
       setCurrentIndex(index);
+      
+      // Clear previous lyrics
+      setLyrics(null);
       
       // Add to recently played
       try {
@@ -252,6 +295,30 @@ const usePlayer = () => {
     });
   }, []);
 
+// Get lyrics for current track
+  const getLyrics = useCallback(async (trackId) => {
+    try {
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      const trackLyrics = mockLyrics[trackId];
+      if (trackLyrics) {
+        setLyrics(trackLyrics);
+        toast.success("Lyrics loaded");
+      } else {
+        setLyrics({
+          title: currentTrack?.title || "Unknown",
+          artist: currentTrack?.artist || "Unknown Artist",
+          lines: [{ time: 0, text: "Lyrics not available for this track" }]
+        });
+        toast.info("Lyrics not available for this track");
+      }
+    } catch (error) {
+      console.error("Error loading lyrics:", error);
+      toast.error("Failed to load lyrics");
+    }
+  }, [currentTrack]);
+
   // Toggle shuffle
   const toggleShuffle = useCallback(() => {
     setShuffle(prev => {
@@ -292,7 +359,7 @@ const usePlayer = () => {
   }, []);
 
   return {
-    // State
+// State
     currentTrack,
     isPlaying,
     currentTime,
@@ -301,6 +368,7 @@ const usePlayer = () => {
     queue,
     shuffle,
     repeat,
+    lyrics,
     error,
     recentlyPlayed,
     
@@ -313,7 +381,8 @@ const usePlayer = () => {
     setVolume,
     addToQueue,
     toggleShuffle,
-    toggleRepeat
+    toggleRepeat,
+    getLyrics
   };
 };
 

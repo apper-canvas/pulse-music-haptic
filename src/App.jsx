@@ -8,6 +8,7 @@ import Home from "@/components/pages/Home";
 import Library from "@/components/pages/Library";
 import Search from "@/components/pages/Search";
 import PlaylistDetail from "@/components/pages/PlaylistDetail";
+import ArtistPage from "@/components/pages/ArtistPage";
 import Layout from "@/components/organisms/Layout";
 import usePlayer from "@/hooks/usePlayer";
 
@@ -17,15 +18,16 @@ const [searchQuery, setSearchQuery] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(true); // Mock authentication state - set to true for demo
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [user, setUser] = useState(null);
-  const {
+const {
     currentTrack,
     isPlaying,
     currentTime,
     duration,
     volume,
-queue,
+    queue,
     shuffle,
     repeat,
+    lyrics,
     recentlyPlayed,
     playTrack,
     togglePlayPause,
@@ -35,11 +37,12 @@ queue,
     setVolume,
     addToQueue,
     toggleShuffle,
-    toggleRepeat
+    toggleRepeat,
+    getLyrics
   } = usePlayer();
 
-  const playerState = {
-currentTrack,
+const playerState = {
+    currentTrack,
     isPlaying,
     currentTime,
     duration,
@@ -47,6 +50,7 @@ currentTrack,
     queue,
     shuffle,
     repeat,
+    lyrics,
     recentlyPlayed
   };
 
@@ -101,60 +105,72 @@ const handleSearch = (query) => {
 return (
     <div>
 <Layout
-        playerState={playerState}
-        onPlayPause={togglePlayPause}
-        onNext={playNext}
-        onPrevious={playPrevious}
-        onSeek={seekTo}
-        onVolumeChange={setVolume}
-        onToggleShuffle={toggleShuffle}
-        onToggleRepeat={toggleRepeat}
-        onSearch={handleSearch}
-        showSearch={showSearch}
-        isAuthenticated={isAuthenticated}
-        user={user}
-      >
+          playerState={playerState}
+          onPlayPause={togglePlayPause}
+          onNext={playNext}
+          onPrevious={playPrevious}
+          onSeek={seekTo}
+          onVolumeChange={setVolume}
+          onToggleShuffle={toggleShuffle}
+          onToggleRepeat={toggleRepeat}
+          onGetLyrics={getLyrics}
+          onSearch={handleSearch}
+          showSearch={showSearch}
+          isAuthenticated={isAuthenticated}
+          user={user}
+        >
 <Routes>
-          <Route 
-            path="/" 
-            element={<Home onPlayTrack={handlePlayTrack} isAuthenticated={isAuthenticated} />} 
-          />
-          <Route
-            path="/search" 
-            element={
-              <Search 
-                onPlayTrack={handlePlayTrack}
-                onLikeTrack={handleLikeTrack}
-                onAddToQueue={addToQueue}
-                searchQuery={searchQuery}
-                isAuthenticated={isAuthenticated}
-              />
-            } 
-          />
-          <Route 
-            path="/library/*" 
-            element={
-              <Library 
-                onPlayTrack={handlePlayTrack}
-                onLikeTrack={handleLikeTrack}
-                onAddToQueue={addToQueue}
-                isAuthenticated={isAuthenticated}
-                recentlyPlayed={recentlyPlayed}
-              />
-            } 
-          />
-          <Route 
-            path="/playlist/:id" 
-            element={
-              <PlaylistDetail 
-                onPlayTrack={handlePlayTrack}
-                onLikeTrack={handleLikeTrack}
-                onAddToQueue={addToQueue}
-                isAuthenticated={isAuthenticated}
-              />
-            } 
-          />
-</Routes>
+            <Route 
+              path="/" 
+              element={<Home onPlayTrack={handlePlayTrack} isAuthenticated={isAuthenticated} />} 
+            />
+            <Route
+              path="/search" 
+              element={
+                <Search 
+                  onPlayTrack={handlePlayTrack}
+                  onLikeTrack={handleLikeTrack}
+                  onAddToQueue={addToQueue}
+                  searchQuery={searchQuery}
+                  isAuthenticated={isAuthenticated}
+                />
+              } 
+            />
+            <Route 
+              path="/library/*" 
+              element={
+                <Library 
+                  onPlayTrack={handlePlayTrack}
+                  onLikeTrack={handleLikeTrack}
+                  onAddToQueue={addToQueue}
+                  isAuthenticated={isAuthenticated}
+                  recentlyPlayed={recentlyPlayed}
+                />
+              } 
+            />
+            <Route 
+              path="/playlist/:id" 
+              element={
+                <PlaylistDetail 
+                  onPlayTrack={handlePlayTrack}
+                  onLikeTrack={handleLikeTrack}
+                  onAddToQueue={addToQueue}
+                  isAuthenticated={isAuthenticated}
+                />
+              } 
+            />
+            <Route 
+              path="/artist/:id" 
+              element={
+                <ArtistPage 
+                  onPlayTrack={handlePlayTrack}
+                  onLikeTrack={handleLikeTrack}
+                  onAddToQueue={addToQueue}
+                  isAuthenticated={isAuthenticated}
+                />
+              } 
+            />
+          </Routes>
       </Layout>
 
     {/* Signup Modal */}

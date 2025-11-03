@@ -2,6 +2,82 @@ import tracksData from "@/services/mockData/tracks.json";
 import playlistsData from "@/services/mockData/playlists.json";
 import albumsData from "@/services/mockData/albums.json";
 
+// Mock artists data derived from existing tracks
+const artistsData = [
+  {
+    Id: 1,
+    name: "The Weeknd",
+    imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop&crop=faces",
+    followers: 85000000,
+    verified: true,
+    bio: "Canadian singer, songwriter, and record producer known for his dark pop sound.",
+    genres: ["Pop", "R&B", "Alternative"]
+  },
+  {
+    Id: 2,
+    name: "Harry Styles",
+    imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=faces",
+    followers: 47000000,
+    verified: true,
+    bio: "English singer, songwriter, and actor. Former member of One Direction.",
+    genres: ["Pop", "Rock", "Folk"]
+  },
+  {
+    Id: 3,
+    name: "Dua Lipa",
+    imageUrl: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=400&h=400&fit=crop&crop=faces",
+    followers: 72000000,
+    verified: true,
+    bio: "English singer, songwriter known for her disco-pop sound.",
+    genres: ["Pop", "Dance", "Electronic"]
+  },
+  {
+    Id: 4,
+    name: "Olivia Rodrigo",
+    imageUrl: "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?w=400&h=400&fit=crop&crop=faces",
+    followers: 28000000,
+    verified: true,
+    bio: "American singer-songwriter and actress known for emotional pop-rock songs.",
+    genres: ["Pop", "Alternative", "Pop Rock"]
+  },
+  {
+    Id: 5,
+    name: "The Kid LAROI",
+    imageUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&h=400&fit=crop&crop=faces",
+    followers: 15000000,
+    verified: true,
+    bio: "Australian rapper and singer known for melodic hip hop.",
+    genres: ["Hip Hop", "Pop", "Rap"]
+  },
+  {
+    Id: 6,
+    name: "Glass Animals",
+    imageUrl: "https://images.unsplash.com/photo-1506157786151-b8491531f063?w=400&h=400&fit=crop&crop=faces",
+    followers: 12000000,
+    verified: true,
+    bio: "English indie rock band known for their unique psychedelic sound.",
+    genres: ["Indie", "Alternative", "Electronic"]
+  },
+  {
+    Id: 7,
+    name: "Lil Nas X",
+    imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop&crop=faces",
+    followers: 35000000,
+    verified: true,
+    bio: "American rapper and singer known for genre-blending music and viral hits.",
+    genres: ["Hip Hop", "Pop", "Country Rap"]
+  },
+  {
+    Id: 8,
+    name: "Justin Bieber",
+    imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=400&fit=crop&crop=faces",
+    followers: 110000000,
+    verified: true,
+    bio: "Canadian singer known for his pop and R&B music.",
+    genres: ["Pop", "R&B", "Dance"]
+  }
+];
+
 // Helper function to add delay
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -216,6 +292,46 @@ export const albumsService = {
   }
 };
 
+// Artists service
+export const artistsService = {
+  async getAll() {
+    await delay(300);
+    return [...artistsData];
+  },
+
+  async getById(id) {
+    await delay(300);
+    const artist = artistsData.find(a => a.Id === parseInt(id));
+    if (!artist) {
+      throw new Error('Artist not found');
+    }
+    return { ...artist };
+  },
+
+  async getTopTracks(artistId) {
+    await delay(400);
+    const artistTracks = tracksData.filter(track => track.artistId === artistId.toString());
+    return artistTracks.slice(0, 10); // Top 10 tracks
+  },
+
+  async getAlbums(artistId) {
+    await delay(400);
+    const artistAlbums = albumsData.filter(album => album.artistId === artistId.toString());
+    return artistAlbums;
+  },
+
+  async search(query) {
+    await delay(300);
+    if (!query.trim()) return [];
+    
+    const searchTerm = query.toLowerCase();
+    return artistsData.filter(artist =>
+      artist.name.toLowerCase().includes(searchTerm) ||
+      artist.genres.some(genre => genre.toLowerCase().includes(searchTerm))
+    );
+  }
+};
+
 // User Service
 export const userService = {
   async getCurrentUser() {
@@ -294,20 +410,23 @@ export const searchService = {
       return {
         tracks: [],
         playlists: [],
-        albums: []
+        albums: [],
+        artists: []
       };
     }
 
-    const [tracks, playlists, albums] = await Promise.all([
+    const [tracks, playlists, albums, artists] = await Promise.all([
       tracksService.search(query),
       playlistsService.search(query),
-      albumsService.search(query)
+      albumsService.search(query),
+      artistsService.search(query)
     ]);
 
     return {
       tracks,
       playlists,
-      albums
+      albums,
+      artists
     };
   }
 };
