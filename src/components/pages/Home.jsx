@@ -1,6 +1,6 @@
 import React from "react";
-import FeaturedSection from "@/components/organisms/FeaturedSection";
 import RecentlyPlayed from "@/components/organisms/RecentlyPlayed";
+import FeaturedSection from "@/components/organisms/FeaturedSection";
 
 const Home = ({ onPlayTrack }) => {
   return (
@@ -25,11 +25,11 @@ const Home = ({ onPlayTrack }) => {
         </div>
       </section>
 
-      {/* Featured Playlists */}
+{/* Featured Playlists */}
       <FeaturedSection onPlayPlaylist={onPlayTrack} />
 
       {/* Recently Played */}
-      <RecentlyPlayed onPlayAlbum={onPlayTrack} />
+      <RecentlyPlayed onPlayTrack={onPlayTrack} />
 
       {/* Popular Albums */}
       <section className="mb-12">

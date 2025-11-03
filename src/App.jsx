@@ -97,11 +97,11 @@ return (
         isAuthenticated={isAuthenticated}
       >
         <Routes>
-          <Route 
+<Route 
             path="/" 
             element={<Home onPlayTrack={handlePlayTrack} isAuthenticated={isAuthenticated} />} 
           />
-          <Route 
+          <Route
             path="/search" 
             element={
               <Search 
