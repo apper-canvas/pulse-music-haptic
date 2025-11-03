@@ -5,7 +5,7 @@ import Error from "@/components/ui/Error";
 import { albumsService, tracksService } from "@/services/api/musicService";
 import { useNavigate } from "react-router-dom";
 
-const RecentlyPlayed = ({ onPlayAlbum }) => {
+const RecentlyPlayed = ({ onPlayAlbum, isAuthenticated = true }) => {
   const [albums, setAlbums] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -72,7 +72,9 @@ const RecentlyPlayed = ({ onPlayAlbum }) => {
     <section className="mb-12">
       {/* Section Header */}
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-white">Recently Played</h2>
+<h2 className="text-2xl font-bold text-white">
+          {isAuthenticated ? "Recently Played" : "Trending Songs"}
+        </h2>
       </div>
 
       {/* Albums Grid */}

@@ -51,6 +51,14 @@ export const tracksService = {
   }
 };
 
+// Service for getting trending songs for non-authenticated users
+export const trendingService = {
+  getTrendingSongs: async () => {
+    // Return a curated list of trending tracks
+    return tracks.slice(0, 6);
+  }
+};
+
 // Playlists Service
 export const playlistsService = {
   async getAll() {

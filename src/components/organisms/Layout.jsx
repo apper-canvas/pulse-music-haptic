@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
-import Sidebar from "@/components/organisms/Sidebar";
-import TopBar from "@/components/organisms/TopBar";
-import MobileNavigation from "@/components/organisms/MobileNavigation";
-import PlayerBar from "@/components/organisms/PlayerBar";
 import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import MobileNavigation from "@/components/organisms/MobileNavigation";
+import TopBar from "@/components/organisms/TopBar";
+import Sidebar from "@/components/organisms/Sidebar";
+import PlayerBar from "@/components/organisms/PlayerBar";
 import { cn } from "@/utils/cn";
-
 const Layout = ({ 
   playerState, 
   onPlayPause, 
@@ -17,12 +17,32 @@ const Layout = ({
   onToggleShuffle,
   onToggleRepeat,
   onSearch,
-  showSearch = false 
+  showSearch = false,
+  isAuthenticated = false 
 }) => {
+
+  // Signup banner for non-authenticated users
+  const SignupBanner = () => (
+    <div className="bg-gradient-to-r from-primary to-green-400 text-black px-4 py-3 text-center">
+      <div className="flex items-center justify-center gap-2 text-sm font-medium">
+        <ApperIcon name="Star" size={16} />
+        <span>Sign up for free to get unlimited access to all songs</span>
+        <Button 
+          size="sm" 
+          variant="secondary" 
+          className="ml-4 bg-black text-white border-black hover:bg-gray-800"
+        >
+          Sign up free
+        </Button>
+      </div>
+    </div>
+  );
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="h-screen flex flex-col bg-background text-white overflow-hidden">
+<div className="h-screen flex flex-col bg-background text-white overflow-hidden">
+      {/* Signup Banner for non-authenticated users */}
+      {!isAuthenticated && <SignupBanner />}
       {/* Desktop Layout */}
       <div className="flex flex-1 min-h-0">
         {/* Desktop Sidebar - Fixed Position */}

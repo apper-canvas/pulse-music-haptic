@@ -69,7 +69,7 @@ const usePlayer = () => {
   }, [volume]);
 
   // Play track
-  const playTrack = useCallback(async (track, trackQueue = [], index = 0) => {
+const playTrack = useCallback(async (track, trackQueue = [], index = 0, isAuthenticated = false) => {
     try {
       setCurrentTrack(track);
       setQueue(trackQueue.length > 0 ? trackQueue : [track]);
@@ -82,31 +82,47 @@ const usePlayer = () => {
         
         // Simulate loading/playing since we don't have real audio files
         setIsPlaying(true);
-        toast.success(`Now playing: ${track.title}`);
+        
+        // Show different messages based on authentication status
+        if (isAuthenticated) {
+          toast.success(`Now playing: ${track.title}`);
+        } else {
+          toast.info(`Preview: ${track.title} (50 second preview)`);
+        }
         
         // Simulate progress for demo purposes
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
         }
         
+        const maxDuration = isAuthenticated ? track.duration : Math.min(50, track.duration);
+        
         intervalRef.current = setInterval(() => {
           setCurrentTime(prev => {
             const newTime = prev + 1;
-            if (newTime >= track.duration) {
+            if (newTime >= maxDuration) {
               clearInterval(intervalRef.current);
+              
+              if (!isAuthenticated && newTime >= 50) {
+                // Preview ended
+                setIsPlaying(false);
+                toast.warning("Preview ended. Sign up for full access!");
+                return 50;
+              }
+              
               if (repeat === "track") {
                 setCurrentTime(0);
                 return 0;
               } else {
                 playNext();
-                return track.duration;
+                return maxDuration;
               }
             }
             return newTime;
           });
         }, 1000);
         
-        setDuration(track.duration);
+        setDuration(maxDuration);
       }
     } catch (error) {
       toast.error("Failed to play track");
@@ -115,7 +131,7 @@ const usePlayer = () => {
   }, [repeat]);
 
   // Toggle play/pause
-  const togglePlayPause = useCallback(() => {
+const togglePlayPause = useCallback(() => {
     if (!currentTrack) return;
 
     if (isPlaying) {

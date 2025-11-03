@@ -1,19 +1,21 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
-import Layout from "@/components/organisms/Layout";
-import Home from "@/components/pages/Home";
-import Search from "@/components/pages/Search";
-import Library from "@/components/pages/Library";
-import PlaylistDetail from "@/components/pages/PlaylistDetail";
-import usePlayer from "@/hooks/usePlayer";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 import { tracksService } from "@/services/api/musicService";
-import { toast } from "react-toastify";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Home from "@/components/pages/Home";
+import Library from "@/components/pages/Library";
+import Search from "@/components/pages/Search";
+import PlaylistDetail from "@/components/pages/PlaylistDetail";
+import Layout from "@/components/organisms/Layout";
+import usePlayer from "@/hooks/usePlayer";
 
 const AppContent = () => {
   const location = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Mock authentication state
+  const [showSignupModal, setShowSignupModal] = useState(false);
   const {
     currentTrack,
     isPlaying,
@@ -45,11 +47,19 @@ const AppContent = () => {
     repeat
   };
 
-  const handlePlayTrack = (track, trackQueue = []) => {
-    playTrack(track, trackQueue);
+const handlePlayTrack = (track, trackQueue = []) => {
+    if (!isAuthenticated) {
+      setShowSignupModal(true);
+      return;
+    }
+    playTrack(track, trackQueue, 0, isAuthenticated);
   };
 
   const handleLikeTrack = async (trackId) => {
+    if (!isAuthenticated) {
+      setShowSignupModal(true);
+      return;
+    }
     try {
       const updatedTrack = await tracksService.toggleLike(trackId);
       if (updatedTrack) {
@@ -71,58 +81,108 @@ const AppContent = () => {
 
   const showSearch = location.pathname === "/search";
 
-  return (
-    <Layout
-      playerState={playerState}
-      onPlayPause={togglePlayPause}
-      onNext={playNext}
-      onPrevious={playPrevious}
-      onSeek={seekTo}
-      onVolumeChange={setVolume}
-      onToggleShuffle={toggleShuffle}
-      onToggleRepeat={toggleRepeat}
-      onSearch={handleSearch}
-      showSearch={showSearch}
-    >
-      <Routes>
-        <Route 
-          path="/" 
-          element={<Home onPlayTrack={handlePlayTrack} />} 
-        />
-        <Route 
-          path="/search" 
-          element={
-            <Search 
-              onPlayTrack={handlePlayTrack}
-              onLikeTrack={handleLikeTrack}
-              onAddToQueue={addToQueue}
-              searchQuery={searchQuery}
-            />
-          } 
-        />
-        <Route 
-          path="/library/*" 
-          element={
-            <Library 
-              onPlayTrack={handlePlayTrack}
-              onLikeTrack={handleLikeTrack}
-              onAddToQueue={addToQueue}
-            />
-          } 
-        />
-        <Route 
-          path="/playlist/:id" 
-          element={
-            <PlaylistDetail 
-              onPlayTrack={handlePlayTrack}
-              onLikeTrack={handleLikeTrack}
-              onAddToQueue={addToQueue}
-            />
-          } 
-        />
-      </Routes>
-    </Layout>
-  );
+return (
+    <div>
+      <Layout
+        playerState={playerState}
+        onPlayPause={togglePlayPause}
+        onNext={playNext}
+        onPrevious={playPrevious}
+        onSeek={seekTo}
+        onVolumeChange={setVolume}
+        onToggleShuffle={toggleShuffle}
+        onToggleRepeat={toggleRepeat}
+        onSearch={handleSearch}
+        showSearch={showSearch}
+        isAuthenticated={isAuthenticated}
+      >
+        <Routes>
+          <Route 
+            path="/" 
+            element={<Home onPlayTrack={handlePlayTrack} isAuthenticated={isAuthenticated} />} 
+          />
+          <Route 
+            path="/search" 
+            element={
+              <Search 
+                onPlayTrack={handlePlayTrack}
+                onLikeTrack={handleLikeTrack}
+                onAddToQueue={addToQueue}
+                searchQuery={searchQuery}
+                isAuthenticated={isAuthenticated}
+              />
+            } 
+          />
+          <Route 
+            path="/library/*" 
+            element={
+              <Library 
+                onPlayTrack={handlePlayTrack}
+                onLikeTrack={handleLikeTrack}
+                onAddToQueue={addToQueue}
+                isAuthenticated={isAuthenticated}
+              />
+            } 
+          />
+          <Route 
+            path="/playlist/:id" 
+            element={
+              <PlaylistDetail 
+                onPlayTrack={handlePlayTrack}
+                onLikeTrack={handleLikeTrack}
+                onAddToQueue={addToQueue}
+                isAuthenticated={isAuthenticated}
+              />
+            } 
+          />
+        </Routes>
+      </Layout>
+
+    {/* Signup Modal */}
+    {showSignupModal && (
+      <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+        <div className="bg-surface rounded-lg p-8 max-w-md mx-4 text-center">
+          <div className="mb-6">
+            <ApperIcon name="Music" size={48} className="text-primary mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-white mb-2">Sign up for full access</h2>
+            <p className="text-gray-light">
+              Get unlimited access to millions of songs, create playlists, and enjoy music without interruptions.
+            </p>
+          </div>
+          
+          <div className="space-y-3 mb-6">
+            <Button 
+              variant="primary" 
+              className="w-full"
+              onClick={() => {
+                setShowSignupModal(false);
+                // Navigate to signup
+              }}
+            >
+              Sign up free
+            </Button>
+            <Button 
+              variant="secondary" 
+              className="w-full"
+              onClick={() => {
+                setShowSignupModal(false);
+                // Navigate to login
+              }}
+            >
+              Log in
+            </Button>
+          </div>
+          
+          <button
+            onClick={() => setShowSignupModal(false)}
+            className="text-gray-light hover:text-white text-sm"
+          >
+            Continue with preview
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
 };
 
 const App = () => {

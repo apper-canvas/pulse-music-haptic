@@ -12,9 +12,10 @@ const TrackRow = ({
   onLike, 
   onAddToQueue,
   showIndex = true,
-  className 
+  className,
+  isAuthenticated = false
 }) => {
-  const handlePlay = () => {
+const handlePlay = () => {
     if (onPlay) {
       onPlay(track);
     }
@@ -97,7 +98,13 @@ const TrackRow = ({
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-2">
+<div className="flex items-center gap-2">
+        {!isAuthenticated && (
+          <span className="text-xs text-accent font-medium px-2 py-1 bg-accent/20 rounded">
+            PREVIEW
+          </span>
+        )}
+        
         <Button
           variant="ghost"
           size="icon"

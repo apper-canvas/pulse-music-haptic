@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
-import PlaylistCard from "@/components/molecules/PlaylistCard";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import Empty from "@/components/ui/Empty";
+import React, { useEffect, useState } from "react";
 import { playlistsService, tracksService } from "@/services/api/musicService";
 import { useNavigate } from "react-router-dom";
+import Loading from "@/components/ui/Loading";
+import Empty from "@/components/ui/Empty";
+import Error from "@/components/ui/Error";
+import PlaylistCard from "@/components/molecules/PlaylistCard";
 
-const FeaturedSection = ({ onPlayPlaylist }) => {
+const FeaturedSection = ({ onPlayPlaylist, isAuthenticated = true }) => {
   const [playlists, setPlaylists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -65,7 +65,7 @@ const FeaturedSection = ({ onPlayPlaylist }) => {
     );
   }
 
-  if (playlists.length === 0) {
+if (playlists.length === 0) {
     return (
       <section className="mb-12">
         <Empty
