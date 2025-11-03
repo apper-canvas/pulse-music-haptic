@@ -1,7 +1,6 @@
 import tracksData from "@/services/mockData/tracks.json";
 import playlistsData from "@/services/mockData/playlists.json";
 import albumsData from "@/services/mockData/albums.json";
-
 // Mock artists data derived from existing tracks
 const artistsData = [
   {
@@ -420,7 +419,7 @@ export const searchService = {
       playlistsService.search(query),
       albumsService.search(query),
       artistsService.search(query)
-    ]);
+]);
 
     return {
       tracks,
@@ -430,3 +429,80 @@ export const searchService = {
     };
   }
 };
+
+// Lyrics Service
+const mockLyricsData = {
+  1: {
+    trackId: 1,
+    title: "Blinding Lights",
+    artist: "The Weeknd",
+    lines: [
+      { time: 0, text: "", highlight: false },
+      { time: 8.5, text: "Yeah, I've been tryna call", highlight: false },
+      { time: 11.2, text: "I've been on my own for long enough", highlight: false },
+      { time: 15.8, text: "Maybe you can show me how to love, maybe", highlight: false },
+      { time: 20.1, text: "I don't know what to do", highlight: false },
+      { time: 23.7, text: "When I'm losing you", highlight: false },
+      { time: 27.3, text: "I feel like I'm missing something", highlight: false },
+      { time: 31.5, text: "When you're gone", highlight: false },
+      { time: 35.2, text: "I said, ooh, I'm blinded by the lights", highlight: false },
+      { time: 40.8, text: "No, I can't sleep until I feel your touch", highlight: false },
+      { time: 45.1, text: "I said, ooh, I'm drowning in the night", highlight: false },
+      { time: 50.7, text: "Oh, when I'm like this, you're the one I trust", highlight: false },
+      { time: 55.3, text: "Hey, hey, hey", highlight: false }
+    ]
+  },
+  2: {
+    trackId: 2,
+    title: "Watermelon Sugar",
+    artist: "Harry Styles",
+    lines: [
+      { time: 0, text: "", highlight: false },
+      { time: 12.3, text: "Tastes like strawberries on a summer evenin'", highlight: false },
+      { time: 17.1, text: "And it sounds just like a song", highlight: false },
+      { time: 21.8, text: "I want more berries and that summer feelin'", highlight: false },
+      { time: 26.5, text: "It's so wonderful and warm", highlight: false },
+      { time: 31.2, text: "Breathe me in, breathe me out", highlight: false },
+      { time: 35.9, text: "I don't know if I could ever go without", highlight: false },
+      { time: 40.6, text: "I'm just thinking out loud", highlight: false },
+      { time: 44.8, text: "I don't know if I could ever go without", highlight: false },
+      { time: 49.5, text: "Watermelon sugar high", highlight: false },
+      { time: 54.2, text: "Watermelon sugar high", highlight: false },
+      { time: 58.9, text: "Watermelon sugar high", highlight: false },
+      { time: 63.6, text: "Watermelon sugar high", highlight: false }
+    ]
+  },
+  3: {
+    trackId: 3,
+    title: "Levitating",
+    artist: "Dua Lipa",
+    lines: [
+      { time: 0, text: "", highlight: false },
+      { time: 10.8, text: "If you wanna run away with me", highlight: false },
+      { time: 14.2, text: "I know a galaxy", highlight: false },
+      { time: 16.9, text: "And I can take you for a ride", highlight: false },
+      { time: 20.3, text: "I had a premonition that we fell into a rhythm", highlight: false },
+      { time: 24.7, text: "Where the music don't stop for life", highlight: false },
+      { time: 29.1, text: "Glitter in the sky, glitter in my eyes", highlight: false },
+      { time: 33.5, text: "Shining just the way I like", highlight: false },
+      { time: 37.9, text: "If you're feeling like you need a little bit of company", highlight: false },
+      { time: 42.3, text: "You met me at the perfect time", highlight: false },
+      { time: 46.7, text: "You want me, I want you, baby", highlight: false },
+      { time: 50.1, text: "My sugarboo, I'm levitating", highlight: false }
+    ]
+  }
+};
+
+export const lyricsService = {
+  async getLyrics(trackId) {
+    await delay(400);
+    const lyrics = mockLyricsData[parseInt(trackId)];
+    if (!lyrics) {
+      return null;
+    }
+    // Return a copy with highlight states reset
+    return {
+      ...lyrics,
+      lines: lyrics.lines.map(line => ({ ...line, highlight: false }))
+    };
+  }

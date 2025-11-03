@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ApperIcon from "@/components/ApperIcon";
 import Slider from "@/components/atoms/Slider";
 import Button from "@/components/atoms/Button";
+import LyricsPanel from "@/components/molecules/LyricsPanel";
 import { cn } from "@/utils/cn";
 import { formatTime } from "@/utils/formatTime";
-import LyricsPanel from "@/components/molecules/LyricsPanel";
 
 const PlayerBar = ({ 
-  currentTrack, 
+currentTrack, 
   isPlaying, 
   currentTime, 
   duration, 
@@ -24,9 +24,16 @@ const PlayerBar = ({
   onToggleShuffle,
   onToggleRepeat,
   onGetLyrics,
-  className 
+  className
 }) => {
-  const [showLyrics, setShowLyrics] = useState(false);
+const [showLyrics, setShowLyrics] = useState(false);
+
+  // Auto-show lyrics when they become available
+  useEffect(() => {
+    if (lyrics && !showLyrics && currentTrack) {
+      setShowLyrics(true);
+    }
+  }, [lyrics, currentTrack]);
   if (!currentTrack) {
     return (
       <div className={cn("bg-surface border-t border-gray-dark p-4", className)}>
@@ -210,12 +217,12 @@ const PlayerBar = ({
               "w-8 h-8 hidden md:flex",
               lyrics ? "text-primary hover:text-primary" : "text-gray-light hover:text-white"
             )}
-            onClick={() => {
+onClick={() => {
               if (currentTrack) {
                 if (!lyrics) {
                   onGetLyrics(currentTrack.Id);
                 } else {
-                  setShowLyrics(true);
+                  setShowLyrics(!showLyrics);
                 }
               }
             }}
@@ -258,7 +265,7 @@ const PlayerBar = ({
         </div>
       </div>
 
-      {/* Lyrics Panel */}
+{/* Lyrics Panel */}
       <LyricsPanel
         isOpen={showLyrics}
         onClose={() => setShowLyrics(false)}
@@ -267,6 +274,7 @@ const PlayerBar = ({
         isPlaying={isPlaying}
         trackTitle={currentTrack?.title}
         artistName={currentTrack?.artist}
+        onSeekToTime={onSeek}
       />
     </div>
   );

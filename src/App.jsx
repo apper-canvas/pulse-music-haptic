@@ -38,7 +38,7 @@ const {
     addToQueue,
     toggleShuffle,
     toggleRepeat,
-    getLyrics
+getLyrics
   } = usePlayer();
 
 const playerState = {
@@ -113,7 +113,7 @@ return (
           onVolumeChange={setVolume}
           onToggleShuffle={toggleShuffle}
           onToggleRepeat={toggleRepeat}
-          onGetLyrics={getLyrics}
+onGetLyrics={getLyrics}
           onSearch={handleSearch}
           showSearch={showSearch}
           isAuthenticated={isAuthenticated}

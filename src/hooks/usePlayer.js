@@ -316,8 +316,29 @@ const playTrack = useCallback(async (track, trackQueue = [], index = 0, isAuthen
     } catch (error) {
       console.error("Error loading lyrics:", error);
       toast.error("Failed to load lyrics");
-    }
+}
   }, [currentTrack]);
+
+  // Add lyrics fetching capability
+  const getLyrics = async (trackId) => {
+    if (!trackId) return;
+    
+    try {
+      setLyrics(null);
+      const { lyricsService } = await import('@/services/api/musicService');
+      const lyricsData = await lyricsService.getLyrics(trackId);
+      setLyrics(lyricsData);
+      
+      if (lyricsData) {
+        toast.success('Lyrics loaded successfully');
+      } else {
+        toast.info('No lyrics available for this song');
+      }
+    } catch (error) {
+      console.error('Error fetching lyrics:', error);
+      toast.error('Failed to load lyrics');
+    }
+  };
 
   // Toggle shuffle
   const toggleShuffle = useCallback(() => {

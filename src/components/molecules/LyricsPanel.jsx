@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import { cn } from "@/utils/cn";
@@ -6,19 +6,20 @@ import { cn } from "@/utils/cn";
 const LyricsPanel = ({ 
   isOpen, 
   onClose, 
-  lyrics, 
+lyrics, 
   currentTime, 
   isPlaying,
   trackTitle,
-  artistName 
+  artistName,
+  onSeekToTime
 }) => {
   const [activeLine, setActiveLine] = useState(0);
   const containerRef = useRef(null);
   const activeLineRef = useRef(null);
 
-  useEffect(() => {
-    if (!lyrics?.lines || !isPlaying) return;
-
+useEffect(() => {
+    if (!lyrics?.lines) return;
+    
     // Find the current active line based on time
     let currentLineIndex = 0;
     for (let i = lyrics.lines.length - 1; i >= 0; i--) {
@@ -59,7 +60,7 @@ const LyricsPanel = ({
         <div className="flex items-center justify-between p-6 border-b border-gray-medium">
           <div>
             <h2 className="text-2xl font-bold text-white">Lyrics</h2>
-            {trackTitle && artistName && (
+{trackTitle && artistName && (
               <p className="text-gray-light mt-1">
                 {trackTitle} • {artistName}
               </p>
@@ -94,9 +95,10 @@ const LyricsPanel = ({
                       ? "text-gray-light"
                       : "text-gray-medium"
                   )}
-                  onClick={() => {
-                    // Could implement seek to line functionality
-                    console.log(`Seek to time: ${line.time}s`);
+onClick={() => {
+                    if (onSeekToTime) {
+                      onSeekToTime(line.time);
+                    }
                   }}
                 >
                   {line.text}
