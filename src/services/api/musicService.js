@@ -506,3 +506,4 @@ export const lyricsService = {
       lines: lyrics.lines.map(line => ({ ...line, highlight: false }))
     };
   }
+};
